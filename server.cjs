@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
-const ROOT = __dirname;
+const ROOT = path.join(__dirname, 'dist');
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -24,7 +24,7 @@ const server = http.createServer((req, res) => {
 
   if (urlPath === '/') urlPath = '/index.html';
 
-  const filePath = path.join(ROOT, urlPath);
+  const filePath = path.normalize(path.join(ROOT, urlPath));
 
   if (!filePath.startsWith(ROOT)) {
     res.writeHead(403);
@@ -34,6 +34,7 @@ const server = http.createServer((req, res) => {
   fs.stat(filePath, (err, stat) => {
     if (!err && stat.isFile()) {
       const ext = path.extname(filePath).toLowerCase();
+
       res.writeHead(200, {
         'Content-Type': MIME[ext] || 'application/octet-stream',
         'Cache-Control': 'no-cache'
@@ -45,6 +46,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(404, {
       'Content-Type': 'text/plain; charset=utf-8'
     });
+
     res.end('Not Found');
   });
 });
