@@ -1739,5 +1739,3 @@ select:focus-visible {
   }
 }
 
-/* TEMP: hide admin button only */
-#admin-button{display:none !important;}
